@@ -13,6 +13,21 @@
 		<springVersion>4.2.2.RELEASE</springVersion>
 	</properties>
 	<dependencies>
+		<!-- http://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<!-- http://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>2.13</version>
+		</dependency>
+
+
 	</dependencies>
 	<build>
 		<finalName>leetcode</finalName>
