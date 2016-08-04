@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.zlz.bug.data.DataModel;
+import com.zlz.bug.data.NextPage;
 import com.zlz.bug.data.NovalRegularExpression;
 import com.zlz.bug.data.RegularExpression;
 import com.zlz.bug.utils.ResourcesConstant;
@@ -25,7 +26,7 @@ public class DataModelTest {
 	public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		DataModel model = DataModel.getInstance();
 		RegularExpression express = new NovalRegularExpression();
-		String get = model.getRegularData("http://www.sqsxs.com/book/1/1755/1931264.html", express);
+		NextPage get = model.getRegularData("http://www.sqsxs.com/book/1/1755/1931264.html", express);
 		System.out.println(get);
 
 	}

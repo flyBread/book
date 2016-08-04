@@ -58,7 +58,7 @@ public class ToolMainPanel extends JPanel {
 
 	// 开始的环境设置
 	private void setEnvPanel() {
-		JLabel configlabel = getJLabel("开始节点");
+		JLabel configlabel = getJLabel("名称");
 		JComboBox<String> configfield = new JComboBox<String>();
 		configfield.setEditable(true);// 将JComboBox设成是可编辑的.
 		configfield.setMaximumSize(new Dimension(ResourcesConstant.Lweight, 21));
@@ -73,6 +73,8 @@ public class ToolMainPanel extends JPanel {
 		pr.addActionListener(new BegineSearch(configfield,this));
 		env.setMaximumSize(new Dimension(ResourcesConstant.Lweight, 23));
 		this.add(env);
+		logvalue = new JTextArea();
+		this.add(logvalue);
 		this.add(Box.createVerticalStrut(2));
 
 
