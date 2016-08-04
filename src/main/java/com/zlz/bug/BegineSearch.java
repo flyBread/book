@@ -7,7 +7,7 @@ import java.net.URL;
 
 import javax.swing.JComboBox;
 
-import com.zlz.bug.utils.HttpClientModel;
+import com.zlz.bug.data.HttpClientModel;
 
 /**
  * @author zhailz

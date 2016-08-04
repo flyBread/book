@@ -8,7 +8,7 @@ public class ResourcesConstant {
 
 	public static final String TitleString = "工具";
 
-	public static final String BegineSource = "http://quanben-xiaoshuo.com/read/15/chaojijiaolian/1/249.html";
+	public static final String BegineSource = "http://www.sqsxs.com/book/1/1755/1946869.html";
 
 	public static int Lheight = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 

@@ -1,4 +1,4 @@
-package com.zlz.bug.utils;
+package com.zlz.bug.data;
 
 import java.io.ByteArrayInputStream;
 
@@ -9,20 +9,35 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 public class HttpClientModel  {
 
 	private JEditorPane htmlPane = null;
 	private HttpClient client = null;
 	private String url = null;
+	WebClient webClient = null;
 
 	public HttpClientModel(String url) {
-		this.setUrl(url);
-		client = new HttpClient(new MultiThreadedHttpConnectionManager());
-		client.getHttpConnectionManager().getParams().setConnectionTimeout(30000);
+		    webClient = new WebClient();
+			webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+	 		webClient.getOptions().setJavaScriptEnabled(true);
+	 		webClient.getOptions().setCssEnabled(false);
+	 		webClient.getOptions().setTimeout(3500);
+	 		webClient.getOptions().setThrowExceptionOnScriptError(false);
 	}
 
 	public void loadPage() {
 		try {
+			
+	 		HtmlPage rootPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+	 		rootPage = webClient.getPage(url);
+	 		System.out.println(rootPage.getUrl());
+	 		System.out.println(rootPage.getHead().asXml());
+	 		System.out.println(rootPage.getBody().asXml());
+			
 			GetMethod get = new GetMethod(url);
 			get.setFollowRedirects(true);
 			int iGetResultCode = client.executeMethod(get);
