@@ -24,6 +24,9 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.zlz.bug.ContentsRegularExpression;
+import com.zlz.bug.ContentsData.HtmlContentPage;
+import com.zlz.bug.ContentsData.Node;
 
 /**
  * @author zhailz
@@ -33,7 +36,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class DataModel {
 	private Logger logger = LoggerFactory.getLogger(DataModel.class);
 	private WebClient webClient = null;
-	private int timeOut = 350000;
+	private int timeOut = 35000000;
 	private Map<String, String> urlType = new HashMap<String, String>();
 
 	public Map<String, String> getUrlType() {
@@ -52,6 +55,7 @@ public class DataModel {
 	}
 
 	private void ini() {
+		logger.info("初始化加载的开始.....");
 		webClient = new WebClient();
 		webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 		webClient.getOptions().setJavaScriptEnabled(true);
@@ -94,12 +98,13 @@ public class DataModel {
 
 	public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		DataModel model = DataModel.getInstance();
-		RegularExpression express = new NovalRegularExpression();
+		NovalRegularExpression express = new NovalRegularExpression();
 //		String url = "http://www.7dsw.com/book/28/28453/9437445.html";
 //		String url = "http://www.baoliny.com/77109/21496248.html";
 //		String url = "http://www.baoliny.com/77109/21496248.html";
-		String url = "https://www.google.com.hk/#gws_rd=cr,ssl";
-		NextPage get = model.getRegularData(url, express);
+//		String url = "https://www.google.com.hk/#gws_rd=cr,ssl";
+		String url = "http://tianyibook.com/tianyibook/17/17496/index.html";
+		NextPage get = model.getRegularData(url);
 		System.out.println(get.getUpContent());
 		File file = new File("test.txt");
 		if (!file.exists()) {
@@ -111,7 +116,7 @@ public class DataModel {
 		}
 
 		while (get.getNextUrl() != null) {
-			get = model.getRegularData(get.getNextUrl(), express);
+			get = model.getRegularData(get.getNextUrl());
 			System.out.println(get.getUpContent());
 			if (get.getUpContent() != null) {
 				FileUtils.write(file, get.getUpContent(), true);
@@ -119,10 +124,9 @@ public class DataModel {
 		}
 	}
 
-	public NextPage getRegularData(String url, RegularExpression express)
+	public NextPage getRegularData(String url)
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		this.setBaseurl(new URL(url));
-
 		NextPage page = new NextPage();
 		page.setCurrentUrl(url);
 		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
@@ -221,5 +225,35 @@ public class DataModel {
 
 	public void setBaseurl(URL baseurl) {
 		this.baseurl = baseurl;
+	}
+
+	//求取文件的目录页
+	public HtmlContentPage getContentsData(String url, ContentsRegularExpression express) throws Exception {
+		this.setBaseurl(new URL(url));
+		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+		// TODO 需要特殊的类型，来进行判定吗？
+		webClient.getOptions().setJavaScriptEnabled(true);
+		firstPage = webClient.getPage(url);
+		HtmlContentPage base = express.execute(firstPage,url);
+		return base;
+	}
+
+	public String getFormateData(String url) throws Exception {
+		this.setBaseurl(new URL(url));
+		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+		// TODO 需要特殊的类型，来进行判定吗？
+		webClient.getOptions().setJavaScriptEnabled(false);
+		firstPage = webClient.getPage(url);
+		@SuppressWarnings("unchecked")
+		List<HtmlDivision> objects = (List<HtmlDivision>) firstPage.getByXPath("//div[@id=\"content\"]");
+		if(objects != null &&objects.size() == 1 ){
+			return objects.get(0).asText();
+		}
+		return null;
+	}
+
+	public void saveFormateValueToFile(File file, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 }

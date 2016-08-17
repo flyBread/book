@@ -3,9 +3,7 @@ package com.zlz.bug;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,7 +11,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -77,7 +74,6 @@ public class ToolMainPanel extends JPanel {
 		this.add(logvalue);
 		this.add(Box.createVerticalStrut(2));
 
-
 	}
 
 	
@@ -122,6 +118,11 @@ public class ToolMainPanel extends JPanel {
 
 	public void setLeftList(JTable leftList) {
 		this.leftList = leftList;
+	}
+
+	public void logger(String begine) {
+		getLogvalue().append(begine);
+		getLogvalue().append("\n");
 	}
 
 }

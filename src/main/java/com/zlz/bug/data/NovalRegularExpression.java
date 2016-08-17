@@ -3,6 +3,9 @@ package com.zlz.bug.data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.zlz.bug.ContentsData.HtmlContentPage;
+
 /**
  * @author zhailz
  *
@@ -54,5 +57,13 @@ public class NovalRegularExpression implements RegularExpression {
 		NovalRegularExpression expre = new NovalRegularExpression();
 		String valueAfter = expre.execute(value);
 		System.out.println(valueAfter);
+	}
+
+	public HtmlContentPage execute(HtmlPage firstPage) {
+		HtmlContentPage page = new HtmlContentPage(firstPage.getBaseURI());
+		String value = firstPage.asText();
+		String filter = execute(value);
+		page.setFilterContent(filter);
+		return page;
 	}
 }

@@ -5,15 +5,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class NextPage {
 
 	private HtmlPage currentPage;
-	
 	private String currentUrl;
-	
-	
 	private String upContent;
-	
 	private HtmlPage nextPage;
-	
-	
 	private String nextUrl;
 
 

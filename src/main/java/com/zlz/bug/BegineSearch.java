@@ -2,12 +2,20 @@ package com.zlz.bug;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JComboBox;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.zlz.bug.data.DataModel;
 import com.zlz.bug.data.HttpClientModel;
+import com.zlz.bug.data.RegularExpression;
+import com.zlz.bug.data.SimpleTextFilter;
 
 /**
  * @author zhailz
@@ -15,6 +23,8 @@ import com.zlz.bug.data.HttpClientModel;
  * 时间：2016年8月3日 ### 下午3:49:17
  */
 public class BegineSearch implements ActionListener {
+	
+	private Logger logger = LoggerFactory.getLogger(BegineSearch.class);
 	JComboBox<String> configfield = null;
 	HttpClientModel data = null;
 	ToolMainPanel toolMainPanel = null;
@@ -26,12 +36,28 @@ public class BegineSearch implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			String begine = configfield.getSelectedItem().toString();
-			URL url = new URL(begine);
-			data = new HttpClientModel(url.toString());
-			data.loadPage();
-			data.getHtmlPane().setVisible(true);
-			toolMainPanel.add(data.getHtmlPane());
+			//输入的是网址
+			logger.info("输入的参数是：{}",begine);
+			toolMainPanel.logger(begine);
+			if(begine.startsWith("http://")|| begine.startsWith("www.")){
+				URL url = new URL(begine);
+				data = new HttpClientModel(url.toString());
+				data.loadPage();
+				data.getHtmlPane().setVisible(true);
+				toolMainPanel.add(data.getHtmlPane());
+			}else{
+				//首先就是搜索，然后找到文本的目录
+				ContentsRegularExpression express = new ContentsRegularExpression();
+				DataModel.getInstance().getRegularData("http://tianyibook.com/tianyibook/17/17496/index.html");
+			}
+			
 		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FailingHttpStatusCodeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}

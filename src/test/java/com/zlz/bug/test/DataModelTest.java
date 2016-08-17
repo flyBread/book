@@ -1,33 +1,40 @@
 package com.zlz.bug.test;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.File;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.zlz.bug.ContentsRegularExpression;
+import com.zlz.bug.ContentsData.HtmlContentPage;
 import com.zlz.bug.data.DataModel;
-import com.zlz.bug.data.NextPage;
-import com.zlz.bug.data.NovalRegularExpression;
-import com.zlz.bug.data.RegularExpression;
-import com.zlz.bug.utils.ResourcesConstant;
 
 /**
  * @author zhailz
  *
- * 时间：2016年8月4日 ### 上午9:17:32
+ *         时间：2016年8月4日 ### 上午9:17:32
  */
 public class DataModelTest {
 
 	/**
 	 * @param args
-	 * @throws IOException 
-	 * @throws MalformedURLException 
-	 * @throws FailingHttpStatusCodeException 
+	 * @throws Exception
 	 */
-	public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+	public static void main(String[] args) throws Exception {
 		DataModel model = DataModel.getInstance();
-		RegularExpression express = new NovalRegularExpression();
-		NextPage get = model.getRegularData("http://www.sqsxs.com/book/1/1755/1931264.html", express);
+
+		// //首先就是搜索，然后找到文本的目录
+		ContentsRegularExpression express = new ContentsRegularExpression();
+		HtmlContentPage get = DataModel.getInstance()
+				.getContentsData("http://tianyibook.com/tianyibook/17/17496/index.html", express);
 		System.out.println(get);
+
+		// 得到具体的消息
+		String value = model.getFormateData("http://www.mossiella.com/");
+		System.out.println(value);
+
+		String pathname = "/Users/zhailz/Documents/数据存储/txt";
+		File file = new File(pathname, "chongshengguatou1900.txt");
+
+		// 保存到
+		model.saveFormateValueToFile(file, value);
 
 	}
 

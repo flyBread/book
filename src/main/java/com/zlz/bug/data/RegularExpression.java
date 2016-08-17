@@ -1,5 +1,8 @@
 package com.zlz.bug.data;
 
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.zlz.bug.ContentsData.HtmlContentPage;
+
 /**
  * @author zhailz
  *
@@ -8,5 +11,7 @@ package com.zlz.bug.data;
 public interface RegularExpression {
 
 	String execute(String asXml);
+
+	HtmlContentPage execute(HtmlPage firstPage);
 
 }
