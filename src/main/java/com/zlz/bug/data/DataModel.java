@@ -96,7 +96,8 @@ public class DataModel {
 		return DataModelHolder.instance;
 	}
 
-	public HtmlPage getPageByUrl(String url) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+	public HtmlPage getPageByUrlScriptEnabled(String url)
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage firstPage = pages.get(url);
 		if (firstPage == null) {
 			firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();

@@ -1,12 +1,15 @@
 package com.zlz.bug.utils;
 
 import java.io.File;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlHeading3;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsRegularExpression;
 import com.zlz.bug.ContentsData.HtmlContentPage;
@@ -54,21 +57,22 @@ public class BookUtil {
 	@SuppressWarnings("unchecked")
 	public static List<String> getContentsUrl(String name) {
 		try {
-			String namechange = new String(name.getBytes(), "UTF-8");
-			// 百度
-			String baiduURl = "https://www.baidu.com/s?wd=" + namechange;
-			HtmlPage page = DataModel.getInstance().getPageByUrl(baiduURl);
-			List<HtmlDivision> value = (List<HtmlDivision>) page.getByXPath("//div[@class=\"result c-container \"]");
-			for (HtmlDivision domNode : value) {
-				Object a = domNode.getByXPath("//a[@data-click]").get(0);
-				System.out.println(a);
+			List<String> contents = new ArrayList<String>();
+			@SuppressWarnings("deprecation")
+			String namegb = URLEncoder.encode(name);
+			String baiduURl = "https://www.baidu.com/s?ie=utf-8&wd=" + namegb;
+			HtmlPage page = DataModel.getInstance().getPageByUrlScriptEnabled(baiduURl);
+			List<HtmlHeading3> value = (List<HtmlHeading3>) page
+					.getByXPath("//div[@class=\"result c-container \"]//h3[@class=\"t\"]");
+
+			for (HtmlHeading3 domNode : value) {
+				HtmlAnchor a = domNode.getFirstByXPath("//a[@data-click and @target=\"_blank\"]");
+				contents.add(a.getHrefAttribute());
 			}
-			System.out.println(page.asXml());
-			new File("test.html").createNewFile();
-			DataModel.getInstance().saveFormateValueToFile(new File("test.html"), page.asXml());
+
+			return contents;
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// google
