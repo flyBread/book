@@ -96,6 +96,20 @@ public class DataModel {
 		return DataModelHolder.instance;
 	}
 
+	public HtmlPage getPageByUrl(String url) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+		HtmlPage firstPage = pages.get(url);
+		if (firstPage == null) {
+			firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+			// TODO 需要特殊的类型，来进行判定吗？
+			webClient.getOptions().setJavaScriptEnabled(false);
+			firstPage = webClient.getPage(url);
+			pages.put(url, firstPage);
+		}
+
+		return firstPage;
+
+	}
+
 	public NextPage getRegularData(String url)
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		this.setBaseurl(new URL(url));
@@ -249,4 +263,5 @@ public class DataModel {
 		}
 
 	}
+
 }

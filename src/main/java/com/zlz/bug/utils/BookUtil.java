@@ -6,6 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsRegularExpression;
 import com.zlz.bug.ContentsData.HtmlContentPage;
 import com.zlz.bug.ContentsData.Node;
@@ -48,8 +50,33 @@ public class BookUtil {
 		return false;
 	}
 
+	// 根据名字寻找目录页
+	@SuppressWarnings("unchecked")
 	public static List<String> getContentsUrl(String name) {
-		return null;
+		try {
+			String namechange = new String(name.getBytes(), "UTF-8");
+			// 百度
+			String baiduURl = "https://www.baidu.com/s?wd=" + namechange;
+			HtmlPage page = DataModel.getInstance().getPageByUrl(baiduURl);
+			List<HtmlDivision> value = (List<HtmlDivision>) page.getByXPath("//div[@class=\"result c-container \"]");
+			for (HtmlDivision domNode : value) {
+				Object a = domNode.getByXPath("//a[@data-click]").get(0);
+				System.out.println(a);
+			}
+			System.out.println(page.asXml());
+			new File("test.html").createNewFile();
+			DataModel.getInstance().saveFormateValueToFile(new File("test.html"), page.asXml());
 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// google
+		return null;
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		BookUtil.getContentsUrl("易鼎");
 	}
 }
