@@ -26,7 +26,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsRegularExpression;
 import com.zlz.bug.ContentsData.HtmlContentPage;
-import com.zlz.bug.ContentsData.Node;
 
 /**
  * @author zhailz
@@ -38,6 +37,7 @@ public class DataModel {
 	private WebClient webClient = null;
 	private int timeOut = 35000000;
 	private Map<String, String> urlType = new HashMap<String, String>();
+	private Map<String, HtmlPage> pages = new HashMap<String, HtmlPage>();
 
 	public Map<String, String> getUrlType() {
 		return urlType;
@@ -96,43 +96,19 @@ public class DataModel {
 		return DataModelHolder.instance;
 	}
 
-	public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		DataModel model = DataModel.getInstance();
-		NovalRegularExpression express = new NovalRegularExpression();
-//		String url = "http://www.7dsw.com/book/28/28453/9437445.html";
-//		String url = "http://www.baoliny.com/77109/21496248.html";
-//		String url = "http://www.baoliny.com/77109/21496248.html";
-//		String url = "https://www.google.com.hk/#gws_rd=cr,ssl";
-		String url = "http://tianyibook.com/tianyibook/17/17496/index.html";
-		NextPage get = model.getRegularData(url);
-		System.out.println(get.getUpContent());
-		File file = new File("test.txt");
-		if (!file.exists()) {
-			file.createNewFile();
-		}
-
-		if (get.getUpContent() != null) {
-			FileUtils.write(file, get.getUpContent(), true);
-		}
-
-		while (get.getNextUrl() != null) {
-			get = model.getRegularData(get.getNextUrl());
-			System.out.println(get.getUpContent());
-			if (get.getUpContent() != null) {
-				FileUtils.write(file, get.getUpContent(), true);
-			}
-		}
-	}
-
 	public NextPage getRegularData(String url)
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		this.setBaseurl(new URL(url));
 		NextPage page = new NextPage();
 		page.setCurrentUrl(url);
-		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
-		// TODO 需要特殊的类型，来进行判定吗？
-		webClient.getOptions().setJavaScriptEnabled(false);
-		firstPage = webClient.getPage(url);
+		HtmlPage firstPage = pages.get(url);
+		if (firstPage == null) {
+			firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+			// TODO 需要特殊的类型，来进行判定吗？
+			webClient.getOptions().setJavaScriptEnabled(false);
+			firstPage = webClient.getPage(url);
+			pages.put(url, firstPage);
+		}
 		page.setCurrentPage(firstPage);
 
 		String content = getHtmlDivContent(firstPage);
@@ -227,33 +203,50 @@ public class DataModel {
 		this.baseurl = baseurl;
 	}
 
-	//求取文件的目录页
+	// 求取文件的目录页
 	public HtmlContentPage getContentsData(String url, ContentsRegularExpression express) throws Exception {
 		this.setBaseurl(new URL(url));
-		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
-		// TODO 需要特殊的类型，来进行判定吗？
-		webClient.getOptions().setJavaScriptEnabled(true);
-		firstPage = webClient.getPage(url);
-		HtmlContentPage base = express.execute(firstPage,url);
+		webClient.getCurrentWindow().getEnclosedPage();
+		webClient.getOptions().setJavaScriptEnabled(false);
+		HtmlPage firstPage = pages.get(url);
+		if (firstPage == null) {
+			firstPage = (HtmlPage) webClient.getPage(url);
+			pages.put(url, firstPage);
+		}
+
+		HtmlContentPage base = express.execute(firstPage, url);
 		return base;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getFormateData(String url) throws Exception {
 		this.setBaseurl(new URL(url));
 		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
 		// TODO 需要特殊的类型，来进行判定吗？
 		webClient.getOptions().setJavaScriptEnabled(false);
 		firstPage = webClient.getPage(url);
-		@SuppressWarnings("unchecked")
+
 		List<HtmlDivision> objects = (List<HtmlDivision>) firstPage.getByXPath("//div[@id=\"content\"]");
-		if(objects != null &&objects.size() == 1 ){
+		if (objects != null && objects.size() == 1) {
 			return objects.get(0).asText();
 		}
+
+		if (objects != null && objects.isEmpty()) {
+			objects = (List<HtmlDivision>) firstPage.getByXPath("//div[@class=\"content\"]");
+			if (objects != null && objects.size() == 1) {
+				return objects.get(0).asText();
+			}
+		}
+
 		return null;
 	}
 
-	public void saveFormateValueToFile(File file, String value) {
-		// TODO Auto-generated method stub
-		
+	public void saveFormateValueToFile(File file, String value) throws IOException {
+		if (!file.exists()) {
+			file.createNewFile();
+		} else {
+			FileUtils.write(file, value, "UTF-8", true);
+		}
+
 	}
 }
