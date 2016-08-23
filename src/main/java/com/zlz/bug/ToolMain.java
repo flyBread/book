@@ -7,7 +7,7 @@ import java.awt.Toolkit;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
-import com.zlz.bug.utils.ResourcesConstant;
+import com.zlz.bug.utils.BCons;
 
 /**
  * @author zhailz
@@ -33,12 +33,12 @@ public class ToolMain extends JFrame{
 	public ToolMain(String title) {
 		// 主界面设置
 		this.setTitle(title);
-		Image imag = Toolkit.getDefaultToolkit().getImage(ResourcesConstant.frameIcon);
+		Image imag = Toolkit.getDefaultToolkit().getImage(BCons.frameIcon);
 		this.setIconImage(imag);
 		this.setLocation(Lheight, Lweight);
 		this.setSize(new Dimension(swidth+80, sheight));
 		mainPanel.setVisible(true);
-		mainPanel.setBorder(BorderFactory.createTitledBorder(ResourcesConstant.TitleString));
+		mainPanel.setBorder(BorderFactory.createTitledBorder(BCons.TitleString));
 		this.add(mainPanel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -56,6 +56,6 @@ public class ToolMain extends JFrame{
 	}
 
 	protected static void createAndShowGUI() {
-		new ToolMain(ResourcesConstant.TitleString);
+		new ToolMain(BCons.TitleString);
 	}
 }

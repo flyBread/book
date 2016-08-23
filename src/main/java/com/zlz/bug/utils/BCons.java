@@ -2,7 +2,7 @@ package com.zlz.bug.utils;
 
 import java.awt.Toolkit;
 
-public class ResourcesConstant {
+public class BCons {
 
 	public static final String contents = "Contents";
 
@@ -13,6 +13,8 @@ public class ResourcesConstant {
 	public static final String BegineSource = TitleString;
 
 	public static final String errorUrl = "该也没有得到数据，请确认该页的访问是否正常";
+
+	public static final String TimeFormate = "yyyy-MM-dd HH:mm:ss";
 
 	public static int Lheight = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 

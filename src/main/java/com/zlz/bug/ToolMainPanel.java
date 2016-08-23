@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import com.zlz.bug.utils.ResourcesConstant;
+import com.zlz.bug.utils.BCons;
 
 /**
  * @author zhailz
@@ -58,9 +58,9 @@ public class ToolMainPanel extends JPanel {
 		JLabel configlabel = getJLabel("名称");
 		JComboBox<String> configfield = new JComboBox<String>();
 		configfield.setEditable(true);// 将JComboBox设成是可编辑的.
-		configfield.setMaximumSize(new Dimension(ResourcesConstant.Lweight, 21));
+		configfield.setMaximumSize(new Dimension(BCons.Lweight, 21));
 		configfield.setAlignmentY(Component.RIGHT_ALIGNMENT);
-		configfield.setSelectedItem(ResourcesConstant.BegineSource);
+		configfield.setSelectedItem(BCons.BegineSource);
 		JPanel env = new JPanel();
 		env.setLayout(new BorderLayout());
 		env.add(configlabel, BorderLayout.LINE_START);
@@ -68,7 +68,7 @@ public class ToolMainPanel extends JPanel {
 		JButton pr = new JButton("开始");
 		env.add(pr, BorderLayout.LINE_END);
 		pr.addActionListener(new BegineSearch(configfield,this));
-		env.setMaximumSize(new Dimension(ResourcesConstant.Lweight, 23));
+		env.setMaximumSize(new Dimension(BCons.Lweight, 23));
 		this.add(env);
 		logvalue = new JTextArea();
 		this.add(logvalue);

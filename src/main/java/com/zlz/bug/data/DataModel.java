@@ -106,9 +106,7 @@ public class DataModel {
 			firstPage = webClient.getPage(url);
 			pages.put(url, firstPage);
 		}
-
 		return firstPage;
-
 	}
 
 	public NextPage getRegularData(String url)

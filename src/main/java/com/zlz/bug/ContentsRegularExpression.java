@@ -12,7 +12,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsData.HtmlContentPage;
 import com.zlz.bug.ContentsData.Node;
-import com.zlz.bug.utils.ResourcesConstant;
+import com.zlz.bug.utils.BCons;
 
 /**
  * 目录的过滤的内容
@@ -30,12 +30,12 @@ public class ContentsRegularExpression {
 	@SuppressWarnings("unchecked")
 	public HtmlContentPage execute(HtmlPage firstPage, String url) {
 		HtmlContentPage page = new HtmlContentPage(url);
-		logger.info("拉去页面的内容：{}", firstPage.asXml());
+		// logger.info("拉去页面的内容：{}", firstPage.asXml());
 		// 得到所有的索引
 		List<HtmlAnchor> nodes = (List<HtmlAnchor>) firstPage.getByXPath("//a[@href]");
 		List<Node> nodepages = new ArrayList<Node>();
 		if (nodes != null && !nodes.isEmpty()) {
-			page.setType(ResourcesConstant.contents);
+			page.setType(BCons.contents);
 			for (HtmlAnchor anchor : nodes) {
 				String temp = anchor.getTextContent();
 				Matcher mather = regularPattern.matcher(temp);
