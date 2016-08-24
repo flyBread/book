@@ -266,7 +266,7 @@ public class DataModel {
 
 	// 保存中间数据
 	public void store(JSONObject bookjson) {
-
+		// 保存到数据库或者redis中
 	}
 
 }
