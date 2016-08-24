@@ -13,6 +13,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsData.HtmlContentPage;
 import com.zlz.bug.ContentsData.Node;
 import com.zlz.bug.utils.BCons;
+import com.zlz.bug.utils.ToolUtil;
 
 /**
  * 目录的过滤的内容
@@ -41,12 +42,7 @@ public class ContentsRegularExpression {
 				Matcher mather = regularPattern.matcher(temp);
 				if (mather.find()) {
 					String href = anchor.getHrefAttribute();
-					String fullPath = null;
-					if (href.startsWith("http:")) {
-						fullPath = href;
-					} else {
-						fullPath = url.substring(0, url.lastIndexOf("/") + 1) + href;
-					}
+					String fullPath = ToolUtil.getFullPath(firstPage.getUrl(), href);
 					// 有了具体的引用的地址，我们需要把这些的地址储存起来
 					Node node = new Node(temp, fullPath);
 					nodepages.add(node);

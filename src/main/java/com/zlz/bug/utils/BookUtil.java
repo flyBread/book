@@ -63,32 +63,36 @@ public class BookUtil {
 	}
 
 	// 根据名字寻找目录页
-	@SuppressWarnings("unchecked")
+
 	public static List<String> getContentsUrl(String name) {
 		try {
-			List<String> contents = new ArrayList<String>();
 			HtmlPage page = getBaiDuSearch(name);
-			List<HtmlHeading3> value = (List<HtmlHeading3>) page
-					.getByXPath("//div[@class=\"result c-container \"]//h3[@class=\"t\"]");
-			for (HtmlHeading3 domNode : value) {
-				List<HtmlAnchor> a = (List<HtmlAnchor>) domNode
-						.getByXPath("//a[@data-click and @target=\"_blank\" and not(@class)]");
-				for (HtmlAnchor htmlAnchor : a) {
-					System.out.println(htmlAnchor.asText());
-					if (!contents.contains(htmlAnchor.getHrefAttribute())) {
-						System.out.println(htmlAnchor.getHrefAttribute());
-						contents.add(htmlAnchor.getHrefAttribute());
-					}
-				}
-
-			}
-			return contents;
-
+			return getMuLuURL(page);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		// google 搜索最新的章节
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<String> getMuLuURL(HtmlPage page) {
+		List<String> contents = new ArrayList<String>();
+		List<HtmlHeading3> value = (List<HtmlHeading3>) page
+				.getByXPath("//div[@class=\"result c-container \"]//h3[@class=\"t\"]");
+		for (HtmlHeading3 domNode : value) {
+			List<HtmlAnchor> a = (List<HtmlAnchor>) domNode
+					.getByXPath("//a[@data-click and @target=\"_blank\" and not(@class)]");
+			for (HtmlAnchor htmlAnchor : a) {
+				System.out.println(htmlAnchor.asText());
+				if (!contents.contains(htmlAnchor.getHrefAttribute())) {
+					System.out.println(htmlAnchor.getHrefAttribute());
+					contents.add(htmlAnchor.getHrefAttribute());
+				}
+			}
+
+		}
+		return contents;
 	}
 
 	public static HtmlPage getBaiDuSearch(String name)
@@ -118,9 +122,10 @@ public class BookUtil {
 	// 寻找最新的章节
 
 	public static String getNewestChapter(String bookName) throws Exception {
-		JSONObject bookjson = new JSONObject();
-		bookjson.put("name", bookName);
+
 		if (bookName != null && bookName.length() > 0) {
+			JSONObject bookjson = new JSONObject();
+			bookjson.put("name", bookName);
 			// 得到最新的章节
 			HtmlPage page = getBaiDuSearch(bookName);
 			HtmlDivision divfirst = page.getFirstByXPath("//div[@class=\"op_tb_more\"]");
@@ -131,25 +136,47 @@ public class BookUtil {
 				// long值
 				bookjson.put("updateTime", updateTime);
 				// 规范后的易观值
-				bookjson.put("updateTimeFormate", DateFormatUtils.format(updateTime, BCons.TimeFormate));
+				String formateDay = DateFormatUtils.format(updateTime, BCons.TimeFormate);
+				bookjson.put("updateTimeFormate", formateDay);
+				logger.info("本书的更新时间是：{}", formateDay);
 			}
 
 			// 书名称最新的章节的名称
 			HtmlAnchor newest = divfirst.getFirstByXPath("//a[@class=\"op_tb_line\"]");
 			if (newest != null) {
 				bookjson.put("newestChapter", newest.asText());
+				logger.info("本书的最新的章节：{}", newest.asText());
 			}
 
 			// 最快的速度寻找到最新章节的内容
-			fastGetNewestChapterConents(page, newest.asText());
+			String txt = fastGetNewestChapterConents(page, newest.asText());
+			if (txt != null) {
+				bookjson.put("newestChapterContent", txt);
+				logger.info("最新章节的内容：{}", txt);
+			}
 
+			// 备选的目录的位置
+			List<String> contentUrl = getMuLuURL(page);
+			if (contentUrl != null) {
+				logger.info("本书的目录的地址：{}", txt);
+				for (int i = 0; i < contentUrl.size(); i++) {
+					String url = contentUrl.get(i);
+					logger.info("本书的目录的地址：{}", url);
+					bookjson.put("bookMulu" + i, url);
+				}
+			}
+
+			// 保存json的数据
+			DataModel.getInstance().store(bookjson);
+
+			return newest.asText() + "/n" + txt;
 		}
-		return bookName;
 
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static String fastGetNewestChapterConents(HtmlPage page, String chapterName) {
+	private static String fastGetNewestChapterConents(HtmlPage page, String chapterName) throws InterruptedException {
 		ArrayBlockingQueue<String> blockcontens = new ArrayBlockingQueue<String>(4);
 		List<String> contents = new ArrayList<String>();
 		List<HtmlHeading3> value = (List<HtmlHeading3>) page
@@ -158,14 +185,16 @@ public class BookUtil {
 			List<HtmlAnchor> a = (List<HtmlAnchor>) domNode
 					.getByXPath("//a[@data-click and @target=\"_blank\" and not(@class)]");
 			for (HtmlAnchor htmlAnchor : a) {
-				String href = htmlAnchor.getHrefAttribute();
-				if (!contents.contains(href)) {
-					contents.add(href);
-					new GetChapterContent(href, blockcontens, chapterName).start();
-
+				if (blockcontens.isEmpty()) {
+					String href = htmlAnchor.getHrefAttribute();
+					if (!contents.contains(href)) {
+						contents.add(href);
+						new GetChapterContent(href, blockcontens, chapterName).start();
+					}
+				} else {
+					return blockcontens.take();
 				}
 			}
-
 		}
 		return null;
 	}

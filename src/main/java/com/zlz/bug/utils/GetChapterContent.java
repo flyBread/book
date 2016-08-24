@@ -43,6 +43,7 @@ public class GetChapterContent extends Thread {
 								String content = DataModel.getInstance().getFormateData(newesturl);
 								if (content != null) {
 									contents.add(content);
+									break;
 								}
 							}
 						}

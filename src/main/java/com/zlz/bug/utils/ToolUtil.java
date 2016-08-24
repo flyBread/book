@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -74,6 +75,20 @@ public class ToolUtil {
 	public static void main(String[] args) throws ParseException {
 		String value = "更新时间 : 2016-08-22 18:44:02";
 		System.out.println(convertTime(value));
+	}
+
+	public static String getFullPath(URL url, String shorturl) {
+		// 如果相对的路径是全路径，直接返回全路径
+		if (shorturl.startsWith("http:")) {
+			return shorturl;
+		}
+
+		if (shorturl.split("/").length > 2) {
+			String value = shorturl.startsWith("/") ? shorturl : "/" + shorturl;
+			return url.getProtocol() + "://" + url.getHost() + value;
+		}
+
+		return null;
 	}
 
 }

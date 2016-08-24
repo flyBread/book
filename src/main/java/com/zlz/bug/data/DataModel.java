@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,6 +261,11 @@ public class DataModel {
 		} else {
 			FileUtils.write(file, value, "UTF-8", true);
 		}
+
+	}
+
+	// 保存中间数据
+	public void store(JSONObject bookjson) {
 
 	}
 
