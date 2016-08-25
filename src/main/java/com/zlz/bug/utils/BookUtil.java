@@ -121,55 +121,59 @@ public class BookUtil {
 
 	// 寻找最新的章节
 
-	public static String getNewestChapter(String bookName) throws Exception {
+	public static JSONObject getNewestChapter(String bookName) {
 
-		if (bookName != null && bookName.length() > 0) {
-			JSONObject bookjson = new JSONObject();
-			bookjson.put("name", bookName);
-			// 得到最新的章节
-			HtmlPage page = getBaiDuSearch(bookName);
-			HtmlDivision divfirst = page.getFirstByXPath("//div[@class=\"op_tb_more\"]");
-			// 更新内容
-			HtmlSpan time = (HtmlSpan) divfirst.getFirstByXPath("//span[@class=\"op_tb_fr\"]");
-			long updateTime = ToolUtil.convertTime(time.asText());
-			if (updateTime > 0) {
-				// long值
-				bookjson.put("updateTime", updateTime);
-				// 规范后的易观值
-				String formateDay = DateFormatUtils.format(updateTime, BCons.TimeFormate);
-				bookjson.put("updateTimeFormate", formateDay);
-				logger.info("本书的更新时间是：{}", formateDay);
-			}
-
-			// 书名称最新的章节的名称
-			HtmlAnchor newest = divfirst.getFirstByXPath("//a[@class=\"op_tb_line\"]");
-			if (newest != null) {
-				bookjson.put("newestChapter", newest.asText());
-				logger.info("本书的最新的章节：{}", newest.asText());
-			}
-
-			// 最快的速度寻找到最新章节的内容
-			String txt = fastGetNewestChapterConents(page, newest.asText());
-			if (txt != null) {
-				bookjson.put("newestChapterContent", txt);
-				logger.info("最新章节的内容：{}", txt);
-			}
-
-			// 备选的目录的位置
-			List<String> contentUrl = getMuLuURL(page);
-			if (contentUrl != null) {
-				logger.info("本书的目录的地址：{}", txt);
-				for (int i = 0; i < contentUrl.size(); i++) {
-					String url = contentUrl.get(i);
-					logger.info("本书的目录的地址：{}", url);
-					bookjson.put("bookMulu" + i, url);
+		try {
+			if (bookName != null && bookName.length() > 0) {
+				JSONObject bookjson = new JSONObject();
+				bookjson.put("name", bookName);
+				// 得到最新的章节
+				HtmlPage page = getBaiDuSearch(bookName);
+				HtmlDivision divfirst = page.getFirstByXPath("//div[@class=\"op_tb_more\"]");
+				// 更新内容
+				HtmlSpan time = (HtmlSpan) divfirst.getFirstByXPath("//span[@class=\"op_tb_fr\"]");
+				long updateTime = ToolUtil.convertTime(time.asText());
+				if (updateTime > 0) {
+					// long值
+					bookjson.put("updateTime", updateTime);
+					// 规范后的易观值
+					String formateDay = DateFormatUtils.format(updateTime, BCons.TimeFormate);
+					bookjson.put("updateTimeFormate", formateDay);
+					logger.info("本书的更新时间是：{}", formateDay);
 				}
+
+				// 书名称最新的章节的名称
+				HtmlAnchor newest = divfirst.getFirstByXPath("//a[@class=\"op_tb_line\"]");
+				if (newest != null) {
+					bookjson.put("newestChapter", newest.asText());
+					logger.info("本书的最新的章节：{}", newest.asText());
+				}
+
+				// 最快的速度寻找到最新章节的内容
+				String txt = fastGetNewestChapterConents(page, newest.asText());
+				if (txt != null) {
+					bookjson.put("newestChapterContent", txt);
+					logger.info("最新章节的内容：{}", txt);
+				}
+
+				// 备选的目录的位置
+				List<String> contentUrl = getMuLuURL(page);
+				if (contentUrl != null) {
+					logger.info("本书的目录的地址：{}", txt);
+					for (int i = 0; i < contentUrl.size(); i++) {
+						String url = contentUrl.get(i);
+						logger.info("本书的目录的地址：{}", url);
+						bookjson.put("bookMulu" + i, url);
+					}
+				}
+
+				// 保存json的数据
+				DataModel.getInstance().store(bookjson);
+
+				return new JSONObject().put(bookName, "/n/n" + newest.asText() + "/n" + txt);
 			}
-
-			// 保存json的数据
-			DataModel.getInstance().store(bookjson);
-
-			return newest.asText() + "/n" + txt;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return null;
