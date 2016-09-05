@@ -7,6 +7,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -28,6 +30,8 @@ import com.zlz.bug.data.DataModel;
 public class BookUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(BookUtil.class);
+
+	private static ExecutorService pool = Executors.newFixedThreadPool(16);
 
 	public static Boolean storeBookByContentUrl(File file, String contentsUrl) throws Exception {
 		// 根据目录页，抽取目录以及每一章节对应的页面的地址
@@ -75,6 +79,9 @@ public class BookUtil {
 		return null;
 	}
 
+	/**
+	 * 获取目录页的网址
+	 */
 	@SuppressWarnings("unchecked")
 	private static List<String> getMuLuURL(HtmlPage page) {
 		List<String> contents = new ArrayList<String>();
@@ -84,9 +91,8 @@ public class BookUtil {
 			List<HtmlAnchor> a = (List<HtmlAnchor>) domNode
 					.getByXPath("//a[@data-click and @target=\"_blank\" and not(@class)]");
 			for (HtmlAnchor htmlAnchor : a) {
-				System.out.println(htmlAnchor.asText());
-				if (!contents.contains(htmlAnchor.getHrefAttribute())) {
-					System.out.println(htmlAnchor.getHrefAttribute());
+				if (!contents.contains(htmlAnchor.getHrefAttribute()) && htmlAnchor.asText().length() > 0) {
+					logger.info(htmlAnchor.asText() + " : " + htmlAnchor.getHrefAttribute());
 					contents.add(htmlAnchor.getHrefAttribute());
 				}
 			}
@@ -95,12 +101,24 @@ public class BookUtil {
 		return contents;
 	}
 
+	/**
+	 * 根据名称，返回百度的搜索的页面
+	 */
 	public static HtmlPage getBaiDuSearch(String name)
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+		return getBaiDuSearch(name, 0);
+	}
+
+	/**
+	 * 根据名称，返回百度的搜索的页面
+	 */
+	public static HtmlPage getBaiDuSearch(String name, int pageNumber)
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		@SuppressWarnings("deprecation")
 		String namegb = URLEncoder.encode(name);
 		// &pn=0 百度搜索的第几页
-		String baiduURl = "https://www.baidu.com/s?ie=utf-8&wd=" + namegb + "&pn=0";
+		pageNumber = pageNumber * 10;
+		String baiduURl = "https://www.baidu.com/s?ie=utf-8&wd=" + namegb + "&pn=" + pageNumber;
 		HtmlPage page = DataModel.getInstance().getPageByUrlScriptEnabled(baiduURl);
 		return page;
 
@@ -129,17 +147,19 @@ public class BookUtil {
 				bookjson.put("name", bookName);
 				// 得到最新的章节
 				HtmlPage page = getBaiDuSearch(bookName);
-				HtmlDivision divfirst = page.getFirstByXPath("//div[@class=\"op_tb_more\"]");
+				HtmlDivision divfirst = getBaiduFirstDiv(page, bookName);
 				// 更新内容
 				HtmlSpan time = (HtmlSpan) divfirst.getFirstByXPath("//span[@class=\"op_tb_fr\"]");
-				long updateTime = ToolUtil.convertTime(time.asText());
-				if (updateTime > 0) {
-					// long值
-					bookjson.put("updateTime", updateTime);
-					// 规范后的易观值
-					String formateDay = DateFormatUtils.format(updateTime, BCons.TimeFormate);
-					bookjson.put("updateTimeFormate", formateDay);
-					logger.info("本书的更新时间是：{}", formateDay);
+				if (time != null) {
+					long updateTime = ToolUtil.convertTime(time.asText());
+					if (updateTime > 0) {
+						// long值
+						bookjson.put("updateTime", updateTime);
+						// 规范后的易观值
+						String formateDay = DateFormatUtils.format(updateTime, BCons.TimeFormate);
+						bookjson.put("updateTimeFormate", formateDay);
+						logger.info("本书的更新时间是：{}", formateDay);
+					}
 				}
 
 				// 书名称最新的章节的名称
@@ -149,8 +169,9 @@ public class BookUtil {
 					logger.info("本书的最新的章节：{}", newest.asText());
 				}
 
+				String chapterName = newest.asText();
 				// 最快的速度寻找到最新章节的内容
-				String txt = fastGetNewestChapterConents(page, newest.asText());
+				String txt = fastGetNewestChapterConents(page, chapterName);
 				if (txt != null) {
 					bookjson.put("newestChapterContent", txt);
 					logger.info("最新章节的内容：{}", txt);
@@ -179,10 +200,24 @@ public class BookUtil {
 		return null;
 	}
 
+	private static HtmlDivision getBaiduFirstDiv(HtmlPage page, String bookName)
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+		HtmlDivision div = page.getFirstByXPath("//div[@class=\"op_tb_more\"]");
+		if (div == null) {
+			page = getBaiDuSearch(bookName + " " + "小说");
+			div = page.getFirstByXPath("//div[@class=\"result c-container \"]");
+		}
+		return div;
+	}
+
+	/**
+	 * 得到最新的章节的内容
+	 */
 	@SuppressWarnings("unchecked")
 	private static String fastGetNewestChapterConents(HtmlPage page, String chapterName) throws InterruptedException {
 		ArrayBlockingQueue<String> blockcontens = new ArrayBlockingQueue<String>(4);
 		List<String> contents = new ArrayList<String>();
+		// 搜索结果
 		List<HtmlHeading3> value = (List<HtmlHeading3>) page
 				.getByXPath("//div[@class=\"result c-container \"]//h3[@class=\"t\"]");
 		for (HtmlHeading3 domNode : value) {
@@ -193,14 +228,17 @@ public class BookUtil {
 					String href = htmlAnchor.getHrefAttribute();
 					if (!contents.contains(href)) {
 						contents.add(href);
-						new GetChapterContent(href, blockcontens, chapterName).start();
+						new GetChapterContent(href, blockcontens, chapterName).run();
+						// pool.execute(new GetChapterContent(href,
+						// blockcontens, chapterName));
+						// Thread.sleep(1000);
 					}
 				} else {
 					return blockcontens.take();
 				}
 			}
 		}
-		return null;
+		return blockcontens.take();
 	}
 
 	public static void main(String[] args) throws Exception {

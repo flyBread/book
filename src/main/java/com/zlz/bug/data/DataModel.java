@@ -235,23 +235,22 @@ public class DataModel {
 	@SuppressWarnings("unchecked")
 	public String getFormateData(String url) throws Exception {
 		this.setBaseurl(new URL(url));
-		HtmlPage firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
-		// TODO 需要特殊的类型，来进行判定吗？
-		webClient.getOptions().setJavaScriptEnabled(false);
-		firstPage = webClient.getPage(url);
+		HtmlPage firstPage = null;
+		if (pages.get(url) != null) {
+			firstPage = pages.get(url);
+		} else {
+			firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+			// TODO 需要特殊的类型，来进行判定吗？
+			webClient.getOptions().setJavaScriptEnabled(false);
+			firstPage = webClient.getPage(url);
+			pages.put(url, firstPage);
+		}
 
-		List<HtmlDivision> objects = (List<HtmlDivision>) firstPage.getByXPath("//div[@id=\"content\"]");
+		List<HtmlDivision> objects = (List<HtmlDivision>) firstPage
+				.getByXPath("//div[@id=\"content\" or @class=\"zhangjieTXT\" or @class=\"content\"]");
 		if (objects != null && objects.size() == 1) {
 			return objects.get(0).asText();
 		}
-
-		if (objects != null && objects.isEmpty()) {
-			objects = (List<HtmlDivision>) firstPage.getByXPath("//div[@class=\"content\"]");
-			if (objects != null && objects.size() == 1) {
-				return objects.get(0).asText();
-			}
-		}
-
 		return null;
 	}
 

@@ -13,7 +13,7 @@ import com.zlz.bug.data.DataModel;
  *
  *         时间：2016年8月23日 ### 下午7:27:38
  */
-public class GetChapterContent extends Thread {
+public class GetChapterContent implements Runnable {
 
 	String href;
 	ArrayBlockingQueue<String> contents;
@@ -26,7 +26,7 @@ public class GetChapterContent extends Thread {
 	}
 
 	@Override
-	public void start() {
+	public void run() {
 		if (contents.isEmpty()) {
 			ContentsRegularExpression express = new ContentsRegularExpression();
 			try {
@@ -40,8 +40,9 @@ public class GetChapterContent extends Thread {
 						for (Node node : pagesContent.getNodepages()) {
 							if (node.atext.contains(shortName)) {
 								String newesturl = node.url;
+
 								String content = DataModel.getInstance().getFormateData(newesturl);
-								if (content != null) {
+								if (content != null && content.length() > 60) {
 									contents.add(content);
 									break;
 								}

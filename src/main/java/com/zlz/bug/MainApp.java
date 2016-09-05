@@ -16,6 +16,7 @@ public class MainApp {
 		String[] bookNames = BookUtil.personFofusBookNames();
 		if (bookNames != null && bookNames.length > 0) {
 			for (String string : bookNames) {
+				// 得到最新的章节的内容
 				BookUtil.getNewestChapter(string);
 			}
 		}
