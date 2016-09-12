@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * @author zhailz
  *
- *         时间：2016年9月6日 ### 上午11:16:25
+ *         时间：2016年9月6日 ### 上午11:16:25 jsp响应预留的页面
  */
 @RequestMapping(value = "/book")
 @Controller
@@ -34,7 +34,7 @@ public class BookControllerUtil {
 		logger.info("增加object");
 		JavaBean attributeValue = new JavaBean();
 		attributeValue.setBookName("name");
-		mv.addObject(attributeValue);
+		mv.addObject("booname", attributeValue);
 		return mv;
 	}
 }

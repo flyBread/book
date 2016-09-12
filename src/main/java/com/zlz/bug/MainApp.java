@@ -12,13 +12,20 @@ import com.zlz.bug.utils.BookUtil;
 public class MainApp {
 
 	public static void main(String[] args) throws Exception {
-		// 首先发起的流程，我需要知道我关注的是什么
-		String[] bookNames = BookUtil.personFofusBookNames();
-		if (bookNames != null && bookNames.length > 0) {
-			for (String string : bookNames) {
-				// 得到最新的章节的内容
-				BookUtil.getNewestChapter(string);
-			}
-		}
+		MainApp app = new MainApp();
+		app.run();
+	}
+
+	private void run() throws Exception {
+		BookUtil.downLoad("烽皇");
+
+		// // 首先发起的流程，我需要知道我关注的是什么
+		// List<String> bookNames = BookUtil.personFofusBookNames();
+		// if (bookNames != null && bookNames.size() > 0) {
+		// for (String string : bookNames) {
+		// // 得到最新的章节的内容
+		// BookUtil.getNewestChapter(string);
+		// }
+		// }
 	}
 }

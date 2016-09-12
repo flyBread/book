@@ -88,7 +88,7 @@ public class ToolUtil {
 			return url.getProtocol() + "://" + url.getHost() + value;
 		}
 
-		return null;
+		return url + shorturl;
 	}
 
 }

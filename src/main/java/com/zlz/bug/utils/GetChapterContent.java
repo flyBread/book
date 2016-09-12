@@ -1,7 +1,13 @@
 package com.zlz.bug.utils;
 
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsRegularExpression;
 import com.zlz.bug.ContentsData.HtmlContentPage;
@@ -18,6 +24,7 @@ public class GetChapterContent implements Runnable {
 	String href;
 	ArrayBlockingQueue<String> contents;
 	String chapterName;
+	Logger logger = LoggerFactory.getLogger(GetChapterContent.class);
 
 	public GetChapterContent(String href, ArrayBlockingQueue<String> contents, String chapterName) {
 		this.href = href;
@@ -25,6 +32,7 @@ public class GetChapterContent implements Runnable {
 		this.chapterName = chapterName;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		if (contents.isEmpty()) {
@@ -34,25 +42,49 @@ public class GetChapterContent implements Runnable {
 				String pagesxml = pages.asXml();
 				String[] name = chapterName.split("[ ]");
 				String shortName = name[name.length - 1];
-				if (pagesxml.contains(chapterName) || pagesxml.contains(shortName)) {
-					HtmlContentPage pagesContent = DataModel.getInstance().getContentsData(href, express);
-					if (pagesContent.getNodepages() != null && !pagesContent.getNodepages().isEmpty()) {
-						for (Node node : pagesContent.getNodepages()) {
-							if (node.atext.contains(shortName)) {
-								String newesturl = node.url;
 
-								String content = DataModel.getInstance().getFormateData(newesturl);
-								if (content != null && content.length() > 60) {
-									contents.add(content);
-									break;
-								}
+				// 如果一个页面匹配的过多，说明也不是什么好事
+				if (StringUtils.countMatches(pagesxml, shortName) > 5) {
+					return;
+				}
+				if (pagesxml.contains(chapterName) || pagesxml.contains(shortName)) {
+					List<HtmlAnchor> value = (List<HtmlAnchor>) pages.getByXPath("//a[@href and contains(text(),'"
+							+ chapterName + "') or contains(text(),'" + shortName + "')]");
+					if (value != null && !value.isEmpty()) {
+						for (HtmlAnchor anchor : value) {
+							String href = anchor.getHrefAttribute();
+							String fullPath = ToolUtil.getFullPath(pages.getUrl(), href);
+							logger.info("得到最新的连接:{}", fullPath);
+							String content = DataModel.getInstance().getFormateData(fullPath);
+							if (content != null && content.length() > 60) {
+								contents.add(content);
+								break;
 							}
 						}
+					} else {
+						DealWithAllAnchor(express, shortName);
 					}
 				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+		}
+	}
+
+	private void DealWithAllAnchor(ContentsRegularExpression express, String shortName) throws Exception {
+		HtmlContentPage pagesContent = DataModel.getInstance().getContentsData(href, express);
+		if (pagesContent.getNodepages() != null && !pagesContent.getNodepages().isEmpty()) {
+			for (Node node : pagesContent.getNodepages()) {
+				if (node.atext.contains(shortName)) {
+					String newesturl = node.url;
+
+					String content = DataModel.getInstance().getFormateData(newesturl);
+					if (content != null && content.length() > 60) {
+						contents.add(content);
+						break;
+					}
+				}
 			}
 		}
 	}

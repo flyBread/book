@@ -101,7 +101,7 @@ public class DataModel {
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage firstPage = pages.get(url);
 		if (firstPage == null) {
-			firstPage = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+			webClient.getCurrentWindow().getEnclosedPage();
 			// TODO 需要特殊的类型，来进行判定吗？
 			webClient.getOptions().setJavaScriptEnabled(false);
 			firstPage = webClient.getPage(url);

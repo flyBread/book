@@ -92,7 +92,6 @@ public class BookUtil {
 					.getByXPath("//a[@data-click and @target=\"_blank\" and not(@class)]");
 			for (HtmlAnchor htmlAnchor : a) {
 				if (!contents.contains(htmlAnchor.getHrefAttribute()) && htmlAnchor.asText().length() > 0) {
-					logger.info(htmlAnchor.asText() + " : " + htmlAnchor.getHrefAttribute());
 					contents.add(htmlAnchor.getHrefAttribute());
 				}
 			}
@@ -125,16 +124,21 @@ public class BookUtil {
 	}
 
 	// 拿到订阅的名字
-	public static String[] personFofusBookNames() throws Exception {
+	public static List<String> personFofusBookNames() throws Exception {
 		String filep = "foucus.txt";
 		File file = new File(filep);
 		String it = ToolUtil.readFileToString(file, Charsets.UTF_8.name());
 		logger.info("找到关注的数目名字：{}", it);
-		if (it != null && it.length() > 0) {
-			return it.split("[,]");
+		ArrayList<String> bookNames = new ArrayList<String>(30);
+		if (it.contains(",") || it.contains("\n")) {
+			String[] spitevalue = it.split("[,|\n]");
+			for (String booktemp : spitevalue) {
+				if (booktemp.length() > 0) {
+					bookNames.add(booktemp);
+				}
+			}
 		}
-		return null;
-
+		return bookNames;
 	}
 
 	// 寻找最新的章节
@@ -165,33 +169,36 @@ public class BookUtil {
 				// 书名称最新的章节的名称
 				HtmlAnchor newest = divfirst.getFirstByXPath("//a[@class=\"op_tb_line\"]");
 				if (newest != null) {
-					bookjson.put("newestChapter", newest.asText());
-					logger.info("本书的最新的章节：{}", newest.asText());
-				}
-
-				String chapterName = newest.asText();
-				// 最快的速度寻找到最新章节的内容
-				String txt = fastGetNewestChapterConents(page, chapterName);
-				if (txt != null) {
-					bookjson.put("newestChapterContent", txt);
-					logger.info("最新章节的内容：{}", txt);
-				}
-
-				// 备选的目录的位置
-				List<String> contentUrl = getMuLuURL(page);
-				if (contentUrl != null) {
-					logger.info("本书的目录的地址：{}", txt);
-					for (int i = 0; i < contentUrl.size(); i++) {
-						String url = contentUrl.get(i);
-						logger.info("本书的目录的地址：{}", url);
-						bookjson.put("bookMulu" + i, url);
+					String chapterName = newest.asText();
+					if (chapterName.endsWith(".")) {
+						chapterName = chapterName.replace(".", "");
 					}
+					bookjson.put("newestChapter", chapterName);
+					logger.info("本书的最新的章节：{}", chapterName);
+
+					// 最快的速度寻找到最新章节的内容
+					String txt = fastGetNewestChapterConents(page, chapterName);
+					if (txt != null) {
+						bookjson.put("newestChapterContent", txt);
+						logger.info("最新章节的内容：{}", txt);
+					}
+
+					// 备选的目录的位置
+					List<String> contentUrl = getMuLuURL(page);
+					if (contentUrl != null) {
+						for (int i = 0; i < contentUrl.size(); i++) {
+							String url = contentUrl.get(i);
+							logger.info("本书的目录的地址：{}", url);
+							bookjson.put("bookMulu" + i, url);
+						}
+					}
+
+					// 保存json的数据
+					DataModel.getInstance().store(bookjson);
+
+					return new JSONObject().put(bookName, "/n/n" + newest.asText() + "/n" + txt);
+
 				}
-
-				// 保存json的数据
-				DataModel.getInstance().store(bookjson);
-
-				return new JSONObject().put(bookName, "/n/n" + newest.asText() + "/n" + txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -243,11 +250,21 @@ public class BookUtil {
 
 	public static void main(String[] args) throws Exception {
 
-		String[] bookNames = BookUtil.personFofusBookNames();
-		if (bookNames != null && bookNames.length > 0) {
+		List<String> bookNames = BookUtil.personFofusBookNames();
+		if (bookNames != null && bookNames.size() > 0) {
 			for (String string : bookNames) {
 				getNewestChapter(string);
 			}
 		}
+	}
+
+	public static void downLoad(String bookName)
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+		HtmlPage page = getBaiDuSearch(bookName);
+		List<String> mulus = getMuLuURL(page);
+		for (String string : mulus) {
+			System.out.println(string);
+		}
+
 	}
 }
