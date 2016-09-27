@@ -1,7 +1,7 @@
 package com.zlz.bug;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +34,7 @@ public class ContentsRegularExpression {
 		// logger.info("拉去页面的内容：{}", firstPage.asXml());
 		// 得到所有的索引
 		List<HtmlAnchor> nodes = (List<HtmlAnchor>) firstPage.getByXPath("//a[@href]");
-		List<Node> nodepages = new ArrayList<Node>();
+		TreeSet<Node> nodepages = new TreeSet<Node>();
 		if (nodes != null && !nodes.isEmpty()) {
 			page.setType(BCons.contents);
 			for (HtmlAnchor anchor : nodes) {

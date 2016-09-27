@@ -1,6 +1,6 @@
 package com.zlz.bug.ContentsData;
 
-import java.util.List;
+import java.util.TreeSet;
 
 /**
  * @author zhailz
@@ -14,7 +14,7 @@ public class HtmlContentPage {
 	// 过滤后的文本消息
 	private String filterContent = null;
 
-	private List<Node> nodepages = null;
+	private TreeSet<Node> nodepages = null;
 
 	// 从此页面抽取的内容
 	private String type = null;
@@ -30,7 +30,7 @@ public class HtmlContentPage {
 		return this.filterContent;
 	}
 
-	public List<Node> getNodepages() {
+	public TreeSet<Node> getNodepages() {
 		return nodepages;
 	}
 
@@ -46,7 +46,7 @@ public class HtmlContentPage {
 		this.filterContent = filter;
 	}
 
-	public void setNodepages(List<Node> nodepages) {
+	public void setNodepages(TreeSet<Node> nodepages) {
 		this.nodepages = nodepages;
 	}
 

@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,34 +41,38 @@ public class BookUtil {
 		// 首先就是搜索，然后找到文本的目录
 		ContentsRegularExpression express = new ContentsRegularExpression();
 		HtmlContentPage get = DataModel.getInstance().getContentsData(contentsUrl, express);
-
 		// 目录地址
 		if (get != null && get.getType().equalsIgnoreCase(BCons.contents)) {
-			List<Node> contents = get.getNodepages();
-			for (int i = 0; i < contents.size(); i++) {
-				Node node = contents.get(i);
-				String contentTitle = node.atext;
-				String contentText = model.getFormateData(node.url);
-				if (contentTitle != null && contentText != null && contentText.length() > 0) {
-					logger.info("开始写入：{}", contentTitle);
-					model.saveFormateValueToFile(file, contentTitle);
-					model.saveFormateValueToFile(file, "\n");
-					model.saveFormateValueToFile(file, contentText);
-				} else if (contentTitle != null) {
-					model.saveFormateValueToFile(file, contentTitle);
-					model.saveFormateValueToFile(file, "\n");
-					model.saveFormateValueToFile(file, BCons.errorUrl + ": " + node.url);
+			TreeSet<Node> contents = get.getNodepages();
+			if (contents != null && !contents.isEmpty()) {
+				for (Node node : contents) {
+					String contentTitle = node.atext;
+					String contentText = model.getFormateData(node.url);
+					if (contentTitle != null && contentText != null && contentText.length() > 0) {
+						logger.info("开始写入：{}", contentTitle);
+						model.saveFormateValueToFile(file, contentTitle);
+						model.saveFormateValueToFile(file, "\n");
+						model.saveFormateValueToFile(file, contentText);
+					} else if (contentTitle != null) {
+						model.saveFormateValueToFile(file, contentTitle);
+						model.saveFormateValueToFile(file, "\n");
+						model.saveFormateValueToFile(file, BCons.errorUrl + ": " + node.url);
+					}
 				}
+
+				return true;
+			} else {
+				return false;
 			}
 
-			return true;
 		}
 
 		return false;
 	}
 
-	// 根据名字寻找目录页
-
+	/**
+	 * 根据名字寻找目录页
+	 */
 	public static List<String> getContentsUrl(String name) {
 		try {
 			HtmlPage page = getBaiDuSearch(name);
@@ -195,7 +200,6 @@ public class BookUtil {
 
 					// 保存json的数据
 					DataModel.getInstance().store(bookjson);
-
 					return new JSONObject().put(bookName, "/n/n" + newest.asText() + "/n" + txt);
 
 				}
@@ -250,21 +254,54 @@ public class BookUtil {
 
 	public static void main(String[] args) throws Exception {
 
-		List<String> bookNames = BookUtil.personFofusBookNames();
-		if (bookNames != null && bookNames.size() > 0) {
-			for (String string : bookNames) {
-				getNewestChapter(string);
-			}
-		}
+		// List<String> bookNames = BookUtil.personFofusBookNames();
+		// if (bookNames != null && bookNames.size() > 0) {
+		// for (String string : bookNames) {
+		// getNewestChapter(string);
+		// }
+		// }
+		getURLPageMainContent();
 	}
 
-	public static void downLoad(String bookName)
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		HtmlPage page = getBaiDuSearch(bookName);
-		List<String> mulus = getMuLuURL(page);
-		for (String string : mulus) {
-			System.out.println(string);
+	// 得到网页的内容
+	public static String getURLPageMainContent() {
+		try {
+			String http = "http://web.6park.com/classbk/messages/8803.html";
+			HtmlPage page = DataModel.getInstance().getPageByUrlScriptEnabled(http);
+			System.out.println(page.asText());
+		} catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public static boolean downLoad(String bookName) {
+		File file = new File(bookName);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			List<String> mulus = getContentsUrl(bookName);
+			if (mulus != null && !mulus.isEmpty()) {
+				for (String muluurl : mulus) {
+					boolean result = storeBookByContentUrl(file, muluurl);
+					if (result) {
+						return true;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
 
 	}
 }
