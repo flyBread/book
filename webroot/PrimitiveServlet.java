@@ -1,4 +1,3 @@
-package com.mouse.chapter2simpleServletContainer;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -1,4 +1,4 @@
-package com.mouse.chapter2simpleServletContainer;
+package com.mouse.chapter2simpleServletContainer.application;
 
 import java.io.IOException;
 

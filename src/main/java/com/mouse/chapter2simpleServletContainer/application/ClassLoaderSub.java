@@ -1,9 +1,10 @@
-package com.mouse.chapter2simpleServletContainer;
+package com.mouse.chapter2simpleServletContainer.application;
 
 import java.io.File;
 import java.io.FileInputStream;
 
 public class ClassLoaderSub extends ClassLoader {
+
 	public Class<?> defineClassByName(String name, byte[] b, int off, int len) {
 		// 由于defineClass是protected，所以需要继承后来调用
 		Class<?> clazz = super.defineClass(name, b, off, len);
