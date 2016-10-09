@@ -1,6 +1,5 @@
-package com.mouse.httpServer;
+package com.mouse.chapter2simpleServletContainer;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,30 +7,23 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.mouse.chapter1httpServer.HttpServer;
+import com.mouse.chapter1httpServer.Request;
+import com.mouse.chapter1httpServer.Response;
+
 /**
  * @author <a href="http://www.baidu.com"> zhailz </a> <br>
  *         time：2016年10月9日 <br>
- *         version: 1.0-上午10:03:55
+ *         version: 1.0-上午11:12:29
  */
-public class HttpServer {
-	/**
-	 * WEB_ROOT is the directory where our HTML and other files reside. * For
-	 * this package, WEB_ROOT is the "webroot" directory under the working
-	 * directory. The working directory is the location in the file system from
-	 * where the java command was invoked.
-	 */
-	public static final String WEB_ROOT = System.getProperty("user.dir") + File.separator + "webroot";
-	// shutdown command
-	private static final String SHUTDOWN_COMMAND = "/SHUTDOWN";
-
-	// the shutdown command received
-	private boolean shutdown = false;
+public class HttpServer1 extends HttpServer {
 
 	public static void main(String[] args) {
-		HttpServer server = new HttpServer();
+		HttpServer1 server = new HttpServer1();
 		server.await();
 	}
 
+	@Override
 	public void await() {
 		ServerSocket serverSocket = null;
 		int port = 8080;
@@ -56,9 +48,18 @@ public class HttpServer {
 				// create Response object
 				Response response = new Response(output);
 				response.setRequest(request);
-				//设置静态的资源，寻找WEB_ROOT下对应的文件
-				// 文件的地址是：new File(HttpServer.WEB_ROOT, request.getUri())
-				response.sendStaticResource();
+
+				// check if this is a request for a servlet or
+				// a static resource
+				// a request for a servlet begins with "/servlet/"
+				if (request.getUri().startsWith("/servlet/")) {
+					ServletProcessor1 processor = new ServletProcessor1();
+					processor.process(request, response);
+				} else {
+					StaticResoureProcessor processor = new StaticResoureProcessor();
+					processor.process(request, response);
+				}
+
 				// Close the socket
 				socket.close();
 				// check if the previous URI is a shutdown command

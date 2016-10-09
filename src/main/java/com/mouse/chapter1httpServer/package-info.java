@@ -5,4 +5,4 @@
  * 
  *         how tomcat works chapter 1 http Server
  */
-package com.mouse.httpServer;
+package com.mouse.chapter1httpServer;
