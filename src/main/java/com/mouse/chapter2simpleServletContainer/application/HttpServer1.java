@@ -1,15 +1,15 @@
 package com.mouse.chapter2simpleServletContainer.application;
 
+import com.mouse.chapter1httpServer.HttpServer;
+import com.mouse.chapter1httpServer.Request;
+import com.mouse.chapter1httpServer.Response;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import com.mouse.chapter1httpServer.HttpServer;
-import com.mouse.chapter1httpServer.Request;
-import com.mouse.chapter1httpServer.Response;
 
 /**
  * @author <a href="http://www.baidu.com"> zhailz </a> <br>

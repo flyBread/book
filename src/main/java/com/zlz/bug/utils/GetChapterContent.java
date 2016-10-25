@@ -1,18 +1,17 @@
 package com.zlz.bug.utils;
 
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.zlz.bug.ContentsData.HtmlContentPage;
+import com.zlz.bug.ContentsData.Node;
+import com.zlz.bug.ContentsRegularExpression;
+import com.zlz.bug.data.DataModel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.zlz.bug.ContentsRegularExpression;
-import com.zlz.bug.ContentsData.HtmlContentPage;
-import com.zlz.bug.ContentsData.Node;
-import com.zlz.bug.data.DataModel;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * @author zhailz

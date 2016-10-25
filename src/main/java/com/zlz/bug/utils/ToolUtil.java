@@ -1,19 +1,14 @@
 package com.zlz.bug.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.Date;
-
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.URL;
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * @author zhailz

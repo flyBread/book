@@ -1,19 +1,17 @@
 package com.htmlserver.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
+import com.cache.base.CacheAop;
+import com.cache.base.RedisPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.cache.base.CacheAop;
-import com.cache.base.RedisPool;
-
 import redis.clients.jedis.ShardedJedis;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author zhailz

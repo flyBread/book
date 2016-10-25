@@ -1,19 +1,18 @@
 package com.zlz.bug;
 
-import java.util.List;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zlz.bug.ContentsData.HtmlContentPage;
 import com.zlz.bug.ContentsData.Node;
 import com.zlz.bug.utils.BCons;
 import com.zlz.bug.utils.ToolUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 目录的过滤的内容

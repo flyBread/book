@@ -1,14 +1,13 @@
 package com.cache.base;
 
-import javax.annotation.PostConstruct;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import redis.clients.jedis.ShardedJedis;
+
+import javax.annotation.PostConstruct;
 
 @Service("cacheAop")
 public class CacheAop implements MethodInterceptor {

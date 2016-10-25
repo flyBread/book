@@ -1,16 +1,15 @@
 package com.util;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Servlet操作类

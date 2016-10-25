@@ -1,21 +1,17 @@
 package com.zlz.bug;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.zlz.bug.data.DataModel;
+import com.zlz.bug.data.HttpClientModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.swing.JComboBox;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.zlz.bug.data.DataModel;
-import com.zlz.bug.data.HttpClientModel;
-import com.zlz.bug.data.RegularExpression;
-import com.zlz.bug.data.SimpleTextFilter;
 
 /**
  * @author zhailz

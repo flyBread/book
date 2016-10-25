@@ -1,17 +1,14 @@
 package com.zlz.bug.data;
 
-import java.io.ByteArrayInputStream;
-
-import javax.swing.JEditorPane;
-import javax.swing.text.html.HTMLDocument;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod;
-
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+
+import javax.swing.*;
+import javax.swing.text.html.HTMLDocument;
+import java.io.ByteArrayInputStream;
 
 public class HttpClientModel  {
 

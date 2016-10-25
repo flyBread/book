@@ -1,6 +1,6 @@
 package com.zlz.bug.utils;
 
-import java.awt.Toolkit;
+import java.awt.*;
 
 public class BCons {
 

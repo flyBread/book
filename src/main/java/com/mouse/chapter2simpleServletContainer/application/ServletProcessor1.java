@@ -1,17 +1,16 @@
 package com.mouse.chapter2simpleServletContainer.application;
 
+import com.mouse.chapter1httpServer.Request;
+import com.mouse.chapter1httpServer.Response;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.mouse.chapter1httpServer.Request;
-import com.mouse.chapter1httpServer.Response;
 
 /**
  * @author <a href="http://www.baidu.com"> zhailz </a> <br>

@@ -1,7 +1,5 @@
 package com.util;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.json.JSONException;
@@ -10,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class WebResponseResultLogAop implements MethodInterceptor {
   public static final Logger logger = LoggerFactory.getLogger(WebResponseResultLogAop.class);

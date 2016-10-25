@@ -1,10 +1,8 @@
 package com.zlz.bug.test;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
+import com.cache.base.CacheAop;
+import com.htmlserver.controller.BookControllerUtil;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -14,8 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 
-import com.cache.base.CacheAop;
-import com.htmlserver.controller.BookControllerUtil;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:mvc-dispatcher-servlet.xml")
@@ -40,12 +38,12 @@ public class JerryMouseIT extends AbstractJUnit4SpringContextTests {
 
 	}
 
-	@Test
+	@org.junit.Test
 	public void bookUtilTest() throws Exception {
 		bookControllerUtil.queryPageAuthority(req);
 	}
 
-	@Test
+	@org.junit.Test
 	public void reddisTest() {
 		String jedis = bookControllerUtil.cacheTest(req, "sucess");
 		System.out.println(jedis);

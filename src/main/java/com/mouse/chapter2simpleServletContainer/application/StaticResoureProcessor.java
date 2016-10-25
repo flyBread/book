@@ -1,9 +1,9 @@
 package com.mouse.chapter2simpleServletContainer.application;
 
-import java.io.IOException;
-
 import com.mouse.chapter1httpServer.Request;
 import com.mouse.chapter1httpServer.Response;
+
+import java.io.IOException;
 
 public class StaticResoureProcessor {
 

@@ -1,5 +1,17 @@
 package com.zlz.bug.utils;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.html.*;
+import com.zlz.bug.ContentsData.HtmlContentPage;
+import com.zlz.bug.ContentsData.Node;
+import com.zlz.bug.ContentsRegularExpression;
+import com.zlz.bug.data.DataModel;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,23 +22,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.apache.commons.io.Charsets;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlDivision;
-import com.gargoylesoftware.htmlunit.html.HtmlHeading3;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.zlz.bug.ContentsRegularExpression;
-import com.zlz.bug.ContentsData.HtmlContentPage;
-import com.zlz.bug.ContentsData.Node;
-import com.zlz.bug.data.DataModel;
 
 public class BookUtil {
 

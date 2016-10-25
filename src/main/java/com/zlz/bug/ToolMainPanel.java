@@ -1,22 +1,9 @@
 package com.zlz.bug;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import com.zlz.bug.utils.BCons;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author zhailz

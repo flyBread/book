@@ -1,13 +1,9 @@
 package com.zlz.bug;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-
 import com.zlz.bug.utils.BCons;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author zhailz
