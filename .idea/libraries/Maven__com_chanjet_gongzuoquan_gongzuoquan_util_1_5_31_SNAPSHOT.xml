@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.chanjet.gongzuoquan:gongzuoquan-util:1.5.31-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/chanjet/gongzuoquan/gongzuoquan-util/1.5.31-SNAPSHOT/gongzuoquan-util-1.5.31-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/chanjet/gongzuoquan/gongzuoquan-util/1.5.31-SNAPSHOT/gongzuoquan-util-1.5.31-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/chanjet/gongzuoquan/gongzuoquan-util/1.5.31-SNAPSHOT/gongzuoquan-util-1.5.31-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="gongzuoquan-notify-rest:war">
+    <output-path>$PROJECT_DIR$/../../chanjet-workplace/project-workplace/gongzuoquan-notify-rest/target</output-path>
+    <root id="archive" name="gongzuoquan-notify-rest.war">
+      <element id="artifact" artifact-name="gongzuoquan-notify-rest:war exploded" />
+    </root>
+  </artifact>
+</component>

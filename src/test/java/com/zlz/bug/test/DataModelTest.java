@@ -1,6 +1,10 @@
 package com.zlz.bug.test;
 
-import com.zlz.bug.utils.BookUtil;
+import org.json.JSONObject;
+
+import com.mail.SendMail;
+import com.search.BookSearchUtil;
+import com.swingUI.utils.BookUtil;
 
 /**
  * @author zhailz
@@ -22,8 +26,10 @@ public class DataModelTest {
 		// }
 		// String contentsUrl = "http://www.mossiella.com/";
 		// BookUtil.storeBookByContentUrl(file, contentsUrl);
-
-		BookUtil.getContentsUrl("修真界移民");
+	  String bookName = "永恒剑主";
+		JSONObject value = BookSearchUtil.getNewestChapterByName(bookName);
+		System.out.println(value);
+		SendMail.getInstance().sendMail(bookName+" 准备好了", value.toString(), "zlztodolist@126.com");
 	}
 
 }

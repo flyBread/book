@@ -29,7 +29,7 @@
   </mvc:interceptors>
   
   <!-- redis pool common instance -->
-	<bean id="nutcrackerCenterAop" class="com.cache.base.NutcrackerCenterAop">
+	<bean id="nutcrackerCenterAop" class="com.cache.base.CacheAop">
 		<property name="cachePath" value="/gongzuoquan/account/redis" />
 	</bean>
 
@@ -44,7 +44,7 @@
 			expression="execution(* com.*.*(..))" />
 
 		<aop:advisor advice-ref="nutcrackerCenterAop"
-			pointcut-ref="nutcrackerCenterAopMethod" />
+			pointcut-ref="nutcrackerCenterAopMethod" ></aop:advisor>
 		<aop:advisor advice-ref="workTimeCenter" pointcut-ref="workTimeCenterMethod" />
 	</aop:config>
 
