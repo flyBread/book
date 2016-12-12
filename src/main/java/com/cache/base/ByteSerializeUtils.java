@@ -21,7 +21,6 @@ public class ByteSerializeUtils {
       throw new NullPointerException("Can't serialize null");
     }
     byte[] result = null;
-
     try {
       ObjectOutputStream os = new ObjectOutputStream(bos);
       os.writeObject(value);
